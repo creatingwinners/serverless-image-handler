@@ -17,6 +17,12 @@
 - [Collection of operational metrics](#collection-of-operational-metrics)
 - [External Contributors](#external-contributors)
 - [License](#license)
+- [RIA Play](#ria-play)
+  - [Resize parameters](#resize-parameters)
+  - [Example](#example)
+- [CloudFront and S3 Buckets](#cloudfront-and-s3-buckets)
+  - [Development](#development)
+  - [Production](#production)
 
 # Solution Overview
 
@@ -117,3 +123,112 @@ This solution collects anonymous operational metrics to help AWS improve the qua
 Copyright 2019-2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 
 SPDX-License-Identifier: Apache-2.0
+
+# RIA Play
+
+In your front-end application, you can access both the original and modified images by creating an image request object, stringifying and encoding that object, and appending it to the path of the Amazon CloudFront URL as shown below
+
+```code
+https://distributionName.cloudfront.net/base64encodedrequest
+```
+
+For the time being only the "resize" functionality will be used. When required this part will be updated explaining how to add additional functionality.
+
+## Resize parameters
+
+Resize image to width, height or width x height.
+
+When both a width and height are provided, the possible methods by which the image should fit these are:
+
+- `cover`: (default) Preserving aspect ratio, ensure the image covers both provided dimensions by cropping/clipping to fit.
+- `contain`: Preserving aspect ratio, contain within both provided dimensions using "letterboxing" where necessary.
+- `fill`: Ignore the aspect ratio of the input and stretch to both provided dimensions.
+- `inside`: Preserving aspect ratio, resize the image to be as large as possible while ensuring its dimensions are less than or equal to both those specified.
+- `outside`: Preserving aspect ratio, resize the image to be as small as possible while ensuring its dimensions are greater than or equal to both those specified.
+
+## Example
+
+### Goal
+
+Resize the image `https://d1sw7x4s6hs80l.cloudfront.net/13179/colourful-web-theme-landscape.jpeg`, which demensions are `3840 x 2160 pixels`, to an image with a `width 1280 pixels` while maintaining the original image aspect ratio.
+
+### Solution
+
+1. Get the corresponding S3 Bucket and CloudFront destination
+2. Get the bucket key
+3. Create image request object
+4. Stringify the request object
+5. Base64 encode the request object
+6. Create final URL
+
+**1: Get the corresponding S3 Bucket**
+
+[CloudFront and S3 Buckets](#cloudfront-and-s3-buckets) and you should come up with the following results:
+
+- S3 Bucket: `riaplay-sgp-dev-source-183pz60thvwzz`
+- CF Destination: `d2f1wwz01txa4c.cloudfront.net`
+
+**2: Get the bucket key**
+
+The bucket key can be found by removing the CloudFront URL from the original image URL:
+
+- Bucket key: `13179/colourful-web-theme-landscape.jpeg`
+
+**3: Create image request object**
+
+```json
+{
+	"bucket": "riaplay-sgp-dev-source-183pz60thvwzz",
+	"key": "13179/colourful-web-theme-landscape.jpeg",
+	"edits": {
+		"resize": {
+			"width": 1280,
+			"fit": "inside"
+		}
+	}
+}
+```
+
+**4: Stringify the request object**
+
+Speaks for itself. In JS would be something like:
+
+```js
+const str = JSON.stringfy(obj);
+```
+
+**5: Base64 encode the request object**
+
+Speaks for itself. In JS would be sometimg like:
+
+```js
+const enc = Buffer.from(str).toString("base64");
+```
+
+**6: Create final URL**
+
+```js
+"https://d2f1wwz01txa4c.cloudfront.net/" + enc;
+```
+
+You should have ended up with the following URL:
+
+```
+https://d2f1wwz01txa4c.cloudfront.net/eyJidWNrZXQiOiJyaWFwbGF5LXNncC1kZXYtc291cmNlLTE4M3B6NjB0aHZ3enoiLCJrZXkiOiIxMzE3OS9jb2xvdXJmdWwtd2ViLXRoZW1lLWxhbmRzY2FwZS5qcGVnIiwiZWRpdHMiOnsicmVzaXplIjp7IndpZHRoIjoxMjgwLCJmaXQiOiJpbnNpZGUifX19
+```
+
+# CloudFront and S3 Buckets
+
+## Development
+
+| Server | CF original                   | S3 Bucket                                | CF destination                |
+| ------ | ----------------------------- | ---------------------------------------- | ----------------------------- |
+| SGP 1  | d1sw7x4s6hs80l.cloudfront.net | riaplay-sgp-dev-source-183pz60thvwzz     | d2f1wwz01txa4c.cloudfront.net |
+| SGP 2  | d59ojwbx1ykkx.cloudfront.net  | riaplay-sgp-dev-destination-sjjg2fpbizgt | d2f1wwz01txa4c.cloudfront.net |
+| NLD 1  | d21kma3khzpbxk.cloudfront.net | riaplay-nld-dev-source-mi323donbs9w      | d7w9sfc6u6t4y.cloudfront.net  |
+| NLD 2  | d3uqojbudg8lqy.cloudfront.net | riaplay-nld-dev-destination-5d06nnz4j199 | d7w9sfc6u6t4y.cloudfront.net  |
+
+## Production
+
+| Server | CloudFront | S3 Bucket | Destination |
+| ------ | ---------- | --------- | ----------- |
