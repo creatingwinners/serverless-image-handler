@@ -233,8 +233,8 @@ https://d2f1wwz01txa4c.cloudfront.net/eyJidWNrZXQiOiJyaWFwbGF5LXNncC1kZXYtc291cm
 
 | Server | CF original                   | S3 Bucket                                 | CF destination                |
 | ------ | ----------------------------- | ----------------------------------------- | ----------------------------- |
-| SGP 1  | d1wafvy2q0b2ef.cloudfront.net | riaplay-sgp-com-source-1tj11n4e0bg91      | dm4bxe8ftjo52.cloudfront.net  |
-| SGP 2  | d3ho6dhi8vzvrs.cloudfront.net | riaplay-sgp-com-destination-1dckbg42zgae1 | dm4bxe8ftjo52.cloudfront.net  |
+| SGP 1  | d1wafvy2q0b2ef.cloudfront.net | riaplay-sgp-com-source-1tj11n4e0bg91      | d2cwfvuv00cfkj.cloudfront.net |
+| SGP 2  | d3ho6dhi8vzvrs.cloudfront.net | riaplay-sgp-com-destination-1dckbg42zgae1 | d2cwfvuv00cfkj.cloudfront.net |
 | NLD 1  | d34rplw5447v2z.cloudfront.net | riaplay-nld-com-source-1712hclnhtuzp      | d2z31p8komhuen.cloudfront.net |
 | NLD 2  | d26vdn6672kasa.cloudfront.net | riaplay-nld-com-destination-17frsh1qu6nrz | d2z31p8komhuen.cloudfront.net |
 
