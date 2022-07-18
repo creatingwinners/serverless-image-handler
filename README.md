@@ -242,5 +242,5 @@ https://d2f1wwz01txa4c.cloudfront.net/eyJidWNrZXQiOiJyaWFwbGF5LXNncC1kZXYtc291cm
 
 - COM SGP: https://dm4bxe8ftjo52.cloudfront.net
 - COM NLD: https://d3mc2e4qytm89l.cloudfront.net
-- DEV SGP: https:/d158gu6aqh87y9.cloudfront.net
+- DEV SGP: https://d158gu6aqh87y9.cloudfront.net
 - DEV NLD:
